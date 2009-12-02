@@ -1,5 +1,7 @@
 #include "sudoku.h"
-
+#include <iostream>
+using std::cerr;
+using std::endl;
 
 
 //      main.cpp
@@ -36,6 +38,10 @@ template <typename T>
 bool sudoku(block table[][9])
 {
 
+    filled=0;
+    passes=0;
+    tmp=0;
+    guessed=false;
     fillLists(table);
     calcPossibilities(table);
 
@@ -62,9 +68,10 @@ bool sudoku(block table[][9])
     //        cout<<"\n";
     //    }
 
-    if(filled==81)
+    if(filled<=81)
         return true;
-    return false;
+    else
+        return false;
 }
 
 void fillLists(block table[][9])
@@ -131,13 +138,12 @@ void eliminate3x3P(block table[][9],block& item,int row,int col)
 
 void calcValues(block table[][9])
 {
-    static int tmpFilled=100,tryrow,trycol; //this code makes a guess if not solved in 10 passes
+    static int tmpFilled,tryrow,trycol; //this code makes a guess if not solved in 10 passes
     static block tmptable[9][9];
     if(passes==10 ||passes==20||passes==30)
     {   for(int i=0;i<9;i++)
         for(int j=0;j<9;j++)
         {
-            tmpFilled=100;
             if(table[i][j].p.size()==2)
             {
                 tryrow=i;trycol=j;
@@ -145,6 +151,7 @@ void calcValues(block table[][9])
                     for(int l=0;l<9;l++)
                         tmptable[k][l]=table[k][l];         //save current table state
                 table[i][j].val=table[i][j].p[0];
+                cerr<<"guess"<<i<<j<<" "<<table[i][j].val<<" "<<filled<<endl;
                 tmp=table[i][j].p[1];
 
 
@@ -158,14 +165,17 @@ void calcValues(block table[][9])
             }
         }
     }
-    if(passes>10 && passes%5==0 &&passes%2!=0 && guessed && filled<81)     //guess wrong,swap the guess
+    if(passes>10 && passes%5==0 &&passes%2!=0 && guessed && filled!=81)     //guess wrong,swap the guess
     {
         for(int k=0;k<9;k++)
             for(int l=0;l<9;l++)           //restore table state
                 table[k][l]=tmptable[k][l];
         filled=tmpFilled;
         table[tryrow][trycol].val=tmp;
-        calcPossibilities(table);guessed=false;
+        cerr<<"wrong guess"<<tryrow<<trycol<<" "<<tmp<<" "<<filled<<endl;
+        table[tryrow][trycol].p.clear();
+        calcPossibilities(table);
+        guessed=false;
     }
 
     out:                                       //guess code ends
@@ -180,6 +190,7 @@ void calcValues(block table[][9])
             table[i][j].val=tmp[0];
             table[i][j].p.clear();
             calcPossibilities(table);
+            cerr<<i<<j<<" "<<table[i][j].val<<" "<<filled<<endl;
             ++filled;
             continue;
         }
@@ -193,6 +204,7 @@ void calcValues(block table[][9])
             table[i][j].val=tmp[0];
             table[i][j].p.clear();
             calcPossibilities(table);
+            cerr<<i<<j<<" "<<table[i][j].val<<" "<<filled<<endl;
             ++filled;
             continue;
         }
@@ -208,6 +220,7 @@ void calcValues(block table[][9])
             table[i][j].val=tmp[0];
             table[i][j].p.clear();
             calcPossibilities(table);
+            cerr<<i<<j<<" "<<table[i][j].val<<" "<<filled<<endl;
             ++filled;
             continue;
         }
@@ -232,6 +245,7 @@ void calcValues(block table[][9])
             table[i][j].val=tmp[0];
             table[i][j].p.clear();
             calcPossibilities(table);
+            cerr<<i<<j<<" "<<table[i][j].val<<" "<<filled<<endl;
             ++filled;
             continue;
         }

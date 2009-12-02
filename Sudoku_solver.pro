@@ -4,3 +4,4 @@ SOURCES += main.cpp \
 FORMS += mainwindow.ui
 HEADERS += mainwindow.h \
     sudoku.h
+RESOURCES += icons.qrc

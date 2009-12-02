@@ -81,7 +81,7 @@ void MainWindow::clear()
     for(int i=0;i<9;i++)
     {  for(int j=0;j<9;j++)
         {     QLineEdit *cell=static_cast<QLineEdit *>(ui.tableWidget->cellWidget(i,j));
-            cell->clear();
+            cell->setText("");
             cell->setStyleSheet("background-color: "+color+";font: bold 16px;" );
             if(j==2||j==5)
             {    if(color=="#ffffff")
