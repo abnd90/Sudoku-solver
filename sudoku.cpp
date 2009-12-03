@@ -1,7 +1,5 @@
 #include "sudoku.h"
-#include <iostream>
-using std::cerr;
-using std::endl;
+
 
 
 //      main.cpp
@@ -26,6 +24,7 @@ using std::endl;
 
 int filled,passes,tmp;
 bool guessed=false;
+bool stuck=false;
 
 void fillLists(block table[][9]);
 void calcPossibilities(block table[][9]);
@@ -45,13 +44,15 @@ bool sudoku(block table[][9])
     fillLists(table);
     calcPossibilities(table);
 
-
-    while(filled<81 && passes<50)
+    int prevfilled;
+    while(filled<81 && passes<200)
     {
         calcValues(table);
-        //cout<<filled<<endl;
+        if(prevfilled==filled)
+            stuck=true;
+        prevfilled=filled;
         ++passes;
-    }
+     }
 
     //   for(int i=0;i<9;i++)            //display possibility list
     //                for(int j=0;j<9;j++)
@@ -68,7 +69,7 @@ bool sudoku(block table[][9])
     //        cout<<"\n";
     //    }
 
-    if(filled<=81)
+    if(filled==81)
         return true;
     else
         return false;
@@ -140,7 +141,7 @@ void calcValues(block table[][9])
 {
     static int tmpFilled,tryrow,trycol; //this code makes a guess if not solved in 10 passes
     static block tmptable[9][9];
-    if(passes==10 ||passes==20||passes==30)
+    if(stuck && !guessed)
     {   for(int i=0;i<9;i++)
         for(int j=0;j<9;j++)
         {
@@ -151,7 +152,7 @@ void calcValues(block table[][9])
                     for(int l=0;l<9;l++)
                         tmptable[k][l]=table[k][l];         //save current table state
                 table[i][j].val=table[i][j].p[0];
-                cerr<<"guess"<<i<<j<<" "<<table[i][j].val<<" "<<filled<<endl;
+                //cerr<<"guess"<<i<<j<<" "<<table[i][j].val<<" "<<filled<<endl;
                 tmp=table[i][j].p[1];
 
 
@@ -160,22 +161,23 @@ void calcValues(block table[][9])
 
                 tmpFilled=filled;
                 filled++;
-                guessed=true;
+                guessed=true;stuck=false;
                 goto out; //just breaks the two loops
             }
         }
     }
-    if(passes>10 && passes%5==0 &&passes%2!=0 && guessed && filled!=81)     //guess wrong,swap the guess
+    if(stuck && guessed)     //guess wrong,swap the guess
     {
         for(int k=0;k<9;k++)
             for(int l=0;l<9;l++)           //restore table state
                 table[k][l]=tmptable[k][l];
-        filled=tmpFilled;
+        filled=tmpFilled+1;
         table[tryrow][trycol].val=tmp;
-        cerr<<"wrong guess"<<tryrow<<trycol<<" "<<tmp<<" "<<filled<<endl;
+        //cerr<<"wrong guess"<<tryrow<<trycol<<" "<<tmp<<" "<<filled<<endl;
         table[tryrow][trycol].p.clear();
         calcPossibilities(table);
-        guessed=false;
+        guessed=false;stuck=false;
+        goto out;
     }
 
     out:                                       //guess code ends
@@ -190,7 +192,7 @@ void calcValues(block table[][9])
             table[i][j].val=tmp[0];
             table[i][j].p.clear();
             calcPossibilities(table);
-            cerr<<i<<j<<" "<<table[i][j].val<<" "<<filled<<endl;
+            //cerr<<i<<j<<" "<<table[i][j].val<<" "<<filled<<endl;
             ++filled;
             continue;
         }
@@ -204,7 +206,7 @@ void calcValues(block table[][9])
             table[i][j].val=tmp[0];
             table[i][j].p.clear();
             calcPossibilities(table);
-            cerr<<i<<j<<" "<<table[i][j].val<<" "<<filled<<endl;
+            //cerr<<i<<j<<" "<<table[i][j].val<<" "<<filled<<endl;
             ++filled;
             continue;
         }
@@ -220,7 +222,7 @@ void calcValues(block table[][9])
             table[i][j].val=tmp[0];
             table[i][j].p.clear();
             calcPossibilities(table);
-            cerr<<i<<j<<" "<<table[i][j].val<<" "<<filled<<endl;
+            //cerr<<i<<j<<" "<<table[i][j].val<<" "<<filled<<endl;
             ++filled;
             continue;
         }
@@ -245,7 +247,7 @@ void calcValues(block table[][9])
             table[i][j].val=tmp[0];
             table[i][j].p.clear();
             calcPossibilities(table);
-            cerr<<i<<j<<" "<<table[i][j].val<<" "<<filled<<endl;
+            //cerr<<i<<j<<" "<<table[i][j].val<<" "<<filled<<endl;
             ++filled;
             continue;
         }

@@ -54,8 +54,8 @@ void MainWindow::solve()
 
     if(!sudoku(table))
     {
-        QMessageBox *mb=new QMessageBox(QMessageBox::Critical,"Oops!","Sorry, wrong input"
-                       " or the given puzzle is too difficult for me!",QMessageBox::Ok,this);
+        QMessageBox *mb=new QMessageBox(QMessageBox::Critical,"Oops!","Please check the input puzzle."
+                       ,QMessageBox::Ok,this);
         mb->show();
     }
     else
@@ -102,10 +102,10 @@ void MainWindow::clear()
 void MainWindow::about()
 {
     QMessageBox::about(this,"About Sudoku solver",
-                       "<h2>Sudoku solver v1</h2>"
+                       "<h2>Sudoku solver v1.0</h2>"
                        "<p>A Qt4 application which"
-                       " solves sudoku puzzles."
-                       "<p>Copyright Abhinandh, http://abhinandh.com"
+                       " solves sudoku puzzles. Please report any bugs/unsolvable puzzles."
+                       "<p>&copy; 2009 Abhinandh <abhi@abhinandh.com>"
                        "<p>Licensed under GPL V3");
 }
 
