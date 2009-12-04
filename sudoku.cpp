@@ -23,8 +23,8 @@
 
 
 int filled,passes,tmp;
-bool guessed=false;
-bool stuck=false;
+bool guessed;
+bool stuck;
 
 void fillLists(block table[][9]);
 void calcPossibilities(block table[][9]);
@@ -41,6 +41,7 @@ bool sudoku(block table[][9])
     passes=0;
     tmp=0;
     guessed=false;
+    stuck=false;
     fillLists(table);
     calcPossibilities(table);
 
